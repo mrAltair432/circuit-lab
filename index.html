@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ee">
+  <title>Circuit Lab | Grade 8</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="welcome-backdrop" id="welcome-dialog" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="welcome-card">
+      <img class="welcome-logo" src="assets/cambridge-logo.png" alt="Cambridge International Education">
+      <p class="eyebrow">GRADE 8 SCIENCE · INTERACTIVE LAB</p>
+      <h1 id="welcome-title">Welcome, <span>investigator.</span></h1>
+      <p class="welcome-copy">Your mission is to discover how voltage, current, and resistance work together—not just memorize a formula.</p>
+      <div class="welcome-route">
+        <span>EXPLORE</span><i>→</i><span>INVESTIGATE</span><i>→</i><span>SOLVE</span><i>→</i><span>EXPLAIN</span>
+      </div>
+      <p class="welcome-instruction"><strong>How this lab works</strong><br>Follow the six stages in order. Each stage gives you one clear mission. The circuit lab stays with you: change its settings, predict what will happen, and use its meter to check your thinking.</p>
+      <button class="primary-button welcome-start" id="start-lab" type="button">Start the lab <span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Circuit Lab home">
+      <img class="school-logo" src="assets/cambridge-logo.png" alt="Cambridge International Education">
+      <span class="brand-divider"></span>
+      <span>CIRCUIT<span class="brand-dot">.</span>LAB</span>
+    </a>
+    <div class="topbar-meta"><span class="status-dot"></span> GRADE 8 · SCIENCE</div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="intro-copy">
+        <p class="eyebrow">EXPERIMENT · PREDICT · DISCOVER</p>
+        <h1>Electricity<br>in <span>action.</span></h1>
+        <p class="intro-text">Build a simple circuit and investigate how voltage, current, and resistance are connected.</p>
+      </div>
+      <div class="intro-note">
+        <span class="note-icon" aria-hidden="true">↗</span>
+        <p><strong>Your goal</strong><br>Use evidence from the circuit lab to explain what changes the current—and why.</p>
+      </div>
+    </section>
+
+    <nav class="step-nav" aria-label="Lab stages">
+      <button class="step-tab active" data-view="explore"><span>01</span> Explore</button>
+      <button class="step-tab" data-view="investigate"><span>02</span> Investigate</button>
+      <button class="step-tab" data-view="solve"><span>03</span> Solve</button>
+      <button class="step-tab" data-view="diagnose"><span>04</span> Diagnose</button>
+      <button class="step-tab" data-view="compare"><span>05</span> Compare</button>
+      <button class="step-tab" data-view="conclude"><span>06</span> Conclude</button>
+    </nav>
+
+    <section class="view-panel active" id="view-explore" aria-labelledby="explore-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">STAGE 01 / GET TO KNOW YOUR LAB</p><h2 id="explore-title">Explore the circuit</h2></div>
+        <p class="section-hint">First, learn what each control and meter does.</p>
+      </div>
+      <div class="mission-banner">
+        <span class="mission-number">01</span>
+        <div><p class="eyebrow">YOUR MISSION</p><h3>Make the current change, then find out what stops it.</h3>
+          <ol class="mission-steps"><li>Move the voltage slider from 6 V to 9 V. Watch the ammeter.</li><li>Return to 6 V. Increase resistance from 3 Ω to 6 Ω.</li><li>Open and close the switch. Notice when current flows.</li></ol>
+          <p class="success-check"><strong>Success check:</strong> You can point to the ammeter and explain what happened in all three tests.</p>
+        </div>
+      </div>
+
+      <div class="lab-grid">
+        <article class="card circuit-card">
+          <div class="card-heading">
+            <div><p class="eyebrow">YOUR SHARED CIRCUIT LAB</p><h3>One complete path for current</h3></div>
+            <span class="live-badge"><span class="status-dot" id="circuit-status-dot"></span><span id="circuit-status">CIRCUIT CLOSED</span></span>
+          </div>
+          <div class="circuit-stage">
+            <svg class="circuit-svg" viewBox="0 0 720 300" role="img" aria-labelledby="circuit-title circuit-description">
+              <title id="circuit-title">Battery, switch, and resistor circuit</title>
+              <desc id="circuit-description">A series circuit. Open or close its switch to interrupt or complete the path.</desc>
+              <path class="wire" d="M130 80 H275 M325 80 H445 M545 80 H640 V220 H130 M130 80 V145 M130 177 V220"/>
+              <path class="wire" d="M445 80 L458 64 L475 96 L492 64 L509 96 L526 64 L545 80"/>
+              <line class="battery-line battery-long" x1="105" y1="145" x2="155" y2="145"/>
+              <line class="battery-line battery-short" x1="115" y1="177" x2="145" y2="177"/>
+              <circle class="terminal" cx="275" cy="80" r="5"/>
+              <circle class="terminal" cx="325" cy="80" r="5"/>
+              <line id="switch-lever" class="switch-lever" x1="278" y1="80" x2="316" y2="80"/>
+              <text class="svg-label" x="125" y="126">BATTERY</text>
+              <text class="svg-label" x="286" y="48">SWITCH</text>
+              <text class="svg-label" x="464" y="126">RESISTOR</text>
+              <text class="svg-value" id="svg-voltage" x="94" y="212">6 V</text>
+              <text class="svg-value" id="svg-resistance" x="475" y="145">3 Ω</text>
+              <g id="current-particles" class="current-particles" aria-hidden="true">
+                <circle r="5" cx="0" cy="0"><animateMotion dur="5s" repeatCount="indefinite" path="M130 80 H640 V220 H130 V80"/></circle>
+                <circle r="4" cx="0" cy="0"><animateMotion dur="5s" begin="-1.7s" repeatCount="indefinite" path="M130 80 H640 V220 H130 V80"/></circle>
+                <circle r="3" cx="0" cy="0"><animateMotion dur="5s" begin="-3.4s" repeatCount="indefinite" path="M130 80 H640 V220 H130 V80"/></circle>
+              </g>
+            </svg>
+          </div>
+          <div class="circuit-footer">
+            <span><span class="legend-line"></span> Conventional current flow</span>
+            <button class="text-button" id="explore-switch" type="button" aria-pressed="true">Open the switch <span aria-hidden="true">↗</span></button>
+          </div>
+        </article>
+
+        <article class="card meter-card">
+          <div class="card-heading"><div><p class="eyebrow">LIVE MEASUREMENTS</p><h3>Your instruments</h3></div><span class="meter-icon" aria-hidden="true">⌁</span></div>
+          <div class="meter-readout">
+            <span>Current <span class="unit">I</span></span>
+            <strong><span id="current-reading">2.00</span><small>A</small></strong>
+            <div class="meter-track"><span id="current-bar"></span></div>
+          </div>
+          <div class="meter-readout secondary"><span>Battery voltage <span class="unit">V</span></span><strong><span id="voltage-reading">6.0</span><small>V</small></strong></div>
+          <div class="meter-readout secondary"><span>Resistance <span class="unit">R</span></span><strong><span id="resistance-reading">3.0</span><small>Ω</small></strong></div>
+          <p class="meter-note" id="meter-note">The path is complete, so charges can move around the circuit.</p>
+        </article>
+
+        <article class="card controls-card">
+          <div class="card-heading"><div><p class="eyebrow">CIRCUIT CONTROLS</p><h3>Change one component at a time</h3></div></div>
+          <label class="control-row" for="voltage-control"><span class="control-label">Battery voltage <strong><output id="voltage-output">6 V</output></strong></span><input id="voltage-control" type="range" min="1" max="18" step="1" value="6"><span class="range-scale"><span>1 V</span><span>18 V</span></span></label>
+          <label class="control-row" for="resistance-control"><span class="control-label">Resistance <strong><output id="resistance-output">3 Ω</output></strong></span><input id="resistance-control" type="range" min="1" max="12" step="1" value="3"><span class="range-scale"><span>1 Ω</span><span>12 Ω</span></span></label>
+          <div class="formula-strip"><span>OHM'S LAW</span><strong>V = I × R</strong><span class="formula-dot">·</span><strong>I = V ÷ R</strong></div>
+        </article>
+
+        <article class="card observation-card">
+          <p class="eyebrow">WHAT DO YOU NOTICE?</p>
+          <p id="observation-text">With <strong>3 Ω</strong> of resistance, a <strong>6 V</strong> battery produces <strong>2.00 A</strong> of current.</p>
+          <p class="observation-prompt">Say what happened before you move on.</p>
+          <button class="subtle-button" data-go="investigate" type="button">Continue to Stage 2 <span aria-hidden="true">→</span></button>
+        </article>
+      </div>
+      <div class="stage-footer"><span>STAGE 1 OF 6</span><button class="primary-button" data-next="investigate" type="button">I know my lab — continue <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section class="view-panel" id="view-investigate" aria-labelledby="investigate-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 02 / TEST A RELATIONSHIP</p><h2 id="investigate-title">Investigate one change</h2></div><p class="section-hint">Make a prediction. Change one variable. Record the evidence.</p></div>
+      <div class="mission-banner">
+        <span class="mission-number">02</span><div><p class="eyebrow">YOUR MISSION</p><h3>Find out how current responds to voltage and resistance.</h3>
+          <ol class="mission-steps"><li>Choose a test below and read its prediction question.</li><li>Keep the labelled value fixed. Move the other slider through at least three settings.</li><li>Track current on the graph. Then choose the relationship you observed.</li></ol>
+          <p class="success-check"><strong>Success check:</strong> Your answer describes a pattern supported by the graph—not a single reading.</p>
+        </div>
+      </div>
+      <div class="investigation-grid">
+        <article class="card investigation-controls">
+          <p class="eyebrow">CHOOSE YOUR INVESTIGATION</p>
+          <div class="segmented" role="group" aria-label="Select a variable to investigate"><button class="segment active" type="button" data-study="voltage">Test voltage</button><button class="segment" type="button" data-study="resistance">Test resistance</button></div>
+          <p class="study-description" id="study-description">Keep resistance fixed. Raise voltage and observe the current.</p>
+          <div class="investigation-prompt"><span class="prediction-mark">?</span><p id="investigation-question"><strong>Predict:</strong> If resistance stays the same and voltage increases, what will happen to current?</p></div>
+          <label class="control-row" for="fixed-control"><span class="control-label" id="fixed-label">Fixed resistance <strong><output id="fixed-output">3 Ω</output></strong></span><input id="fixed-control" type="range" min="1" max="12" step="1" value="3"><span class="range-scale"><span id="fixed-min">1 Ω</span><span id="fixed-max">12 Ω</span></span></label>
+          <label class="control-row" for="study-control"><span class="control-label" id="study-label">Voltage <strong><output id="study-output">6 V</output></strong></span><input id="study-control" type="range" min="1" max="18" step="1" value="6"><span class="range-scale"><span id="study-min">1 V</span><span id="study-max">18 V</span></span></label>
+          <label class="answer-select-label" for="investigation-answer">After testing, choose what happened to the current</label>
+          <select id="investigation-answer" class="answer-select"><option value="">Choose your observation…</option><option value="increase">It increased</option><option value="decrease">It decreased</option></select>
+          <button class="secondary-button check-investigation" id="check-investigation" type="button">Check my observation</button>
+          <p class="feedback" id="investigation-feedback" aria-live="polite"></p>
+        </article>
+        <article class="card graph-card">
+          <div class="card-heading"><div><p class="eyebrow">USE THIS AS YOUR EVIDENCE</p><h3>Current vs. <span id="graph-variable">voltage</span></h3></div><span class="graph-equation" id="graph-equation">I = V ÷ 3 Ω</span></div>
+          <div class="graph-wrap"><svg id="study-graph" class="study-graph" viewBox="0 0 560 310" role="img" aria-label="Graph of current versus voltage">
+            <g class="grid-lines"><line x1="62" y1="30" x2="62" y2="260"/><line x1="62" y1="260" x2="530" y2="260"/><line x1="62" y1="202" x2="530" y2="202"/><line x1="62" y1="145" x2="530" y2="145"/><line x1="62" y1="87" x2="530" y2="87"/><line x1="62" y1="30" x2="530" y2="30"/></g>
+            <text class="axis-label" x="18" y="38">I (A)</text><text class="axis-label" id="x-axis-label" x="480" y="298">V (V)</text><text class="axis-number" x="36" y="264">0</text><text class="axis-number" id="graph-y-max" x="30" y="37">6</text><text class="axis-number" x="59" y="280">0</text><text class="axis-number" id="graph-x-max" x="510" y="280">18</text>
+            <path id="graph-curve" class="graph-curve" d="M62 260 L530 30"/><circle id="graph-marker" class="graph-marker" cx="218" cy="183" r="8"/><text id="graph-marker-label" class="marker-label" x="231" y="174">6 V · 2 A</text>
+          </svg></div>
+          <div class="graph-insight"><span class="insight-icon">↗</span><p id="graph-insight-text">With resistance fixed, increasing voltage also increases current.</p></div>
+        </article>
+      </div>
+      <div class="stage-footer"><span>STAGE 2 OF 6</span><button class="primary-button" data-next="solve" type="button">I found a pattern — solve the questions <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section class="view-panel" id="view-solve" aria-labelledby="solve-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 03 / APPLY OHM'S LAW</p><h2 id="solve-title">Solve with the lab beside you</h2></div><p class="section-hint">Set up the circuit on the right, work it out, then check the meter.</p></div>
+      <div class="mission-banner compact-mission">
+        <span class="mission-number">03</span><div><p class="eyebrow">YOUR MISSION</p><h3>Complete the eight calculation questions from your worksheet.</h3><p class="mission-description">Read the question, set the given values in the shared circuit, choose the right Ohm's Law equation, and calculate before checking the ammeter.</p></div>
+      </div>
+      <div class="challenge-layout">
+        <article class="card challenge-card">
+          <div class="challenge-topline"><span class="eyebrow" id="challenge-label">QUESTION 1 / 8</span><span class="score-pill" id="challenge-score">0 of 8 correct</span></div>
+          <div class="challenge-progress"><span id="challenge-progress-bar"></span></div>
+          <p class="question-source">WORKSHEET · CIRCUIT CHALLENGE</p>
+          <h3 id="challenge-question">Set the battery to 6 V and the resistor to 3 Ω. What current should the ammeter show?</h3>
+          <p class="challenge-context" id="challenge-context">Use I = V ÷ R. Enter your predicted current in amperes before revealing the meter.</p>
+          <div class="equation-hint" id="equation-hint">Known: V = 6 V · R = 3 Ω · Find: I</div>
+          <div class="answer-row"><label for="challenge-answer" class="sr-only">Your answer</label><input id="challenge-answer" type="number" step="any" inputmode="decimal" placeholder="Your answer" autocomplete="off"><span class="answer-unit" id="answer-unit">A</span><button class="primary-button" id="check-answer" type="button">Check calculation <span aria-hidden="true">→</span></button></div>
+          <p class="feedback" id="challenge-feedback" aria-live="polite"></p>
+          <div class="challenge-actions"><button class="text-button" id="show-hint" type="button">Show me a hint</button><button class="text-button" id="next-challenge" type="button" hidden>Next question <span aria-hidden="true">→</span></button></div>
+          <p class="hint-text" id="challenge-hint" hidden></p>
+        </article>
+        <aside class="card challenge-sim">
+          <p class="eyebrow">SHARED CIRCUIT LAB</p><h3>Set the values from the question</h3>
+          <label class="control-row" for="challenge-voltage-control"><span class="control-label">Battery voltage <strong><output id="challenge-voltage-output">6 V</output></strong></span><input id="challenge-voltage-control" type="range" min="1" max="18" step="1" value="6"></label>
+          <label class="control-row" for="challenge-resistance-control"><span class="control-label">Resistance <strong><output id="challenge-resistance-output">3 Ω</output></strong></span><input id="challenge-resistance-control" type="range" min="1" max="12" step="1" value="3"></label>
+          <svg class="workbench-circuit" viewBox="0 0 360 112" role="img" aria-label="The battery and resistor used for this question">
+            <path class="workbench-wire" d="M56 30 H125 M218 30 H310 V82 H56 V30 M56 30 V42 M56 68 V82"/>
+            <path class="workbench-resistor" d="M125 30 L137 18 L153 42 L169 18 L185 42 L201 18 L218 30"/>
+            <line class="battery-line" x1="42" y1="42" x2="70" y2="42"/><line class="battery-line battery-short" x1="47" y1="68" x2="65" y2="68"/>
+            <text id="challenge-svg-voltage" class="svg-value" x="30" y="103">6 V</text><text id="challenge-svg-resistance" class="svg-value" x="154" y="67">3 Ω</text>
+            <circle class="workbench-particle" r="4"><animateMotion dur="4s" repeatCount="indefinite" path="M56 30 H310 V82 H56 V30"/></circle>
+          </svg>
+          <div class="challenge-meter"><span>Ammeter reading</span><strong><span id="challenge-current">?</span> <small>A</small></strong><span class="meter-status" id="challenge-meter-status">PREDICT BEFORE REVEALING</span></div>
+          <p class="challenge-sim-note" id="challenge-sim-note">Adjust the controls if needed. Enter your prediction first; the meter is revealed when you check.</p>
+          <button class="subtle-button" data-go="explore" type="button">Review the lab instructions <span aria-hidden="true">→</span></button>
+        </aside>
+      </div>
+      <div class="stage-footer"><span>STAGE 3 OF 6</span><button class="primary-button" data-next="diagnose" type="button">Finish the calculations — find the fault <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section class="view-panel" id="view-diagnose" aria-labelledby="diagnose-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 04 / FIND THE FAULT</p><h2 id="diagnose-title">Can you restore the current?</h2></div><p class="section-hint">Keep the component values as they are. Check the path.</p></div>
+      <div class="mission-banner">
+        <span class="mission-number">04</span><div><p class="eyebrow">YOUR MISSION · WORKSHEET QUESTION 10</p><h3>A wire is disconnected. Predict what the ammeter will show, then repair the circuit.</h3>
+          <ol class="mission-steps"><li>Before clicking, choose the expected ammeter reading below.</li><li>Disconnect the wire and check the meter.</li><li>Reconnect it. Explain why the current returned.</li></ol>
+          <p class="success-check"><strong>Success check:</strong> You can explain why an open circuit has approximately zero current.</p>
+        </div>
+      </div>
+      <div class="diagnose-grid">
+        <article class="card diagnose-card"><span class="fault-icon" aria-hidden="true">!</span><p class="eyebrow">PREDICT FIRST</p><h3>What should the ammeter show?</h3>
+          <div class="diagnose-options" role="group" aria-label="Choose the expected current in an open circuit"><button type="button" class="diagnose-option" data-diagnose-answer="maximum">Maximum current</button><button type="button" class="diagnose-option" data-diagnose-answer="same">The same current as before</button><button type="button" class="diagnose-option" data-diagnose-answer="zero">Approximately zero current</button><button type="button" class="diagnose-option" data-diagnose-answer="double">Twice the previous current</button></div>
+          <p class="feedback" id="diagnose-prediction-feedback" aria-live="polite"></p>
+          <div class="diagnose-actions"><button class="primary-button" id="disconnect-wire" type="button">Disconnect the wire <span aria-hidden="true">↗</span></button><button class="secondary-button" id="repair-wire" type="button">Reconnect the wire</button></div>
+          <div class="diagnose-feedback" id="diagnose-feedback" aria-live="polite">Make your prediction first. Then disconnect the wire to test it.</div>
+        </article>
+        <article class="card diagnose-observation"><p class="eyebrow">OBSERVE THE AMMETER</p><div class="diagnose-meter"><span>Current</span><strong><span id="diagnose-current">2.00</span><small>A</small></strong><span class="meter-status" id="diagnose-status">PATH CLOSED</span></div>
+          <div class="diagnose-path"><span class="path-node">Battery</span><span class="path-segment"></span><span class="path-node" id="diagnose-gap">✓</span><span class="path-segment"></span><span class="path-node">Resistor</span></div><p id="diagnose-explanation">A closed circuit gives charges a complete path to move around.</p>
+        </article>
+      </div>
+      <div class="stage-footer"><span>STAGE 4 OF 6</span><button class="primary-button" data-next="compare" type="button">Circuit repaired — compare two circuits <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section class="view-panel" id="view-compare" aria-labelledby="compare-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 05 / USE EVIDENCE</p><h2 id="compare-title">Which circuit has more current?</h2></div><p class="section-hint">Compare the measurements before choosing.</p></div>
+      <div class="mission-banner">
+        <span class="mission-number">05</span><div><p class="eyebrow">YOUR MISSION</p><h3>Compare the current in two different circuits.</h3>
+          <ol class="mission-steps"><li>Read the voltage and resistance in circuit A and circuit B.</li><li>Use I = V ÷ R or compare the live current readings.</li><li>Choose which circuit has more current—or whether they are equal.</li></ol>
+          <p class="success-check"><strong>Success check:</strong> Explain your choice using both circuits' current readings.</p>
+        </div>
+      </div>
+      <div class="compare-grid">
+        <article class="card compare-card" data-circuit="a"><div class="compare-heading"><span class="compare-tag">A</span><div><p class="eyebrow">CIRCUIT A</p><h3>First circuit</h3></div></div>
+          <label class="control-row" for="compare-va"><span class="control-label">Voltage <strong><output id="compare-va-out">6 V</output></strong></span><input id="compare-va" type="range" min="1" max="18" value="6"></label>
+          <label class="control-row" for="compare-ra"><span class="control-label">Resistance <strong><output id="compare-ra-out">3 Ω</output></strong></span><input id="compare-ra" type="range" min="1" max="12" value="3"></label><div class="compare-result"><span>Current</span><strong><span id="compare-ia">2.00</span> <small>A</small></strong></div>
+        </article>
+        <article class="card compare-card" data-circuit="b"><div class="compare-heading"><span class="compare-tag tag-coral">B</span><div><p class="eyebrow">CIRCUIT B</p><h3>Second circuit</h3></div></div>
+          <label class="control-row" for="compare-vb"><span class="control-label">Voltage <strong><output id="compare-vb-out">12 V</output></strong></span><input id="compare-vb" type="range" min="1" max="18" value="12"></label>
+          <label class="control-row" for="compare-rb"><span class="control-label">Resistance <strong><output id="compare-rb-out">6 Ω</output></strong></span><input id="compare-rb" type="range" min="1" max="12" value="6"></label><div class="compare-result"><span>Current</span><strong><span id="compare-ib">2.00</span> <small>A</small></strong></div>
+        </article>
+      </div>
+      <article class="card compare-question"><div><p class="eyebrow">MAKE YOUR CLAIM</p><h3>Which circuit has more current?</h3><p>Choose an answer, then support it with the meter readings.</p></div>
+        <div class="compare-answer"><button class="compare-choice" type="button" data-choice="a">Circuit A</button><button class="compare-choice" type="button" data-choice="b">Circuit B</button><button class="compare-choice" type="button" data-choice="equal">They have equal current</button><p id="compare-feedback" class="feedback" aria-live="polite"></p></div>
+      </article>
+      <div class="stage-footer"><span>STAGE 5 OF 6</span><button class="primary-button" data-next="conclude" type="button">I compared the evidence — write my conclusion <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section class="view-panel" id="view-conclude" aria-labelledby="conclude-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 06 / EXPLAIN YOUR DISCOVERY</p><h2 id="conclude-title">What did the evidence show?</h2></div><p class="section-hint">Use your observations from the earlier stages.</p></div>
+      <div class="mission-banner compact-mission"><span class="mission-number">06</span><div><p class="eyebrow">FINAL MISSION</p><h3>Complete the two statements to explain Ohm's Law in your own words.</h3><p class="mission-description">Think back to the sliders, graph, calculations, and circuit comparison. Each statement should describe what happened when only one variable changed.</p></div></div>
+      <article class="card conclusion-card"><div class="conclusion-illustration" aria-hidden="true"><span>V</span><i>↔</i><span>I</span><i>↔</i><span>R</span></div><p class="eyebrow">COMPLETE THE CONCLUSION</p><h3>In a simple circuit...</h3>
+        <div class="conclusion-sentence"><span>If resistance stays constant and voltage increases, current</span><select id="voltage-conclusion" aria-label="What happens to current when voltage increases"><option value="">choose...</option><option value="increase">increases</option><option value="decrease">decreases</option></select><span>.</span></div>
+        <div class="conclusion-sentence"><span>If voltage stays constant and resistance increases, current</span><select id="resistance-conclusion" aria-label="What happens to current when resistance increases"><option value="">choose...</option><option value="increase">increases</option><option value="decrease">decreases</option></select><span>.</span></div>
+        <button class="primary-button conclusion-check" id="check-conclusion" type="button">Check my conclusion <span aria-hidden="true">→</span></button><p id="conclusion-feedback" class="feedback" aria-live="polite"></p>
+        <div class="ohm-reminder"><span class="reminder-icon">i</span><p><strong>Remember Ohm's Law</strong><br>Current depends on voltage and resistance: <b>I = V ÷ R</b>.</p></div>
+      </article>
+      <div class="stage-footer"><span>YOU COMPLETED THE CIRCUIT LAB</span><button class="secondary-button" data-next="explore" type="button">Return to Stage 1 <span aria-hidden="true">↗</span></button></div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>CIRCUIT.LAB · GRADE 8</span><span>An ideal model: one resistor and negligible wire resistance.</span><a href="https://colegiocambridge.edu.co/cambridge-la-calera/" target="_blank" rel="noreferrer">Cambridge La Calera</a></footer>
+</body>
+</html>
