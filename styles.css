@@ -274,7 +274,7 @@ input[type="range"] { width: 100%; height: 5px; margin: 13px 0 7px; accent-color
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
-.welcome-backdrop { position: fixed; z-index: 20; inset: 0; display: flex; align-items: center; justify-content: center; padding: 22px; background: rgba(31,42,38,.48); backdrop-filter: blur(5px); }
+.welcome-backdrop { position: fixed; z-index: 20; inset: 0; display: flex; align-items: safe center; justify-content: center; overflow-y: auto; padding: 22px; background: rgba(31,42,38,.48); backdrop-filter: blur(5px); }
 .welcome-backdrop[hidden] { display: none; }
 .welcome-card { width: min(100%, 560px); padding: 32px clamp(23px, 6vw, 52px); border: 1px solid #e7e7dd; border-radius: 17px; background: var(--card); box-shadow: 0 24px 80px rgba(27,40,33,.2); animation: enter .25s ease both; }
 .welcome-logo { display: block; width: 58px; height: 58px; margin: 0 auto 15px; object-fit: contain; }
@@ -288,6 +288,35 @@ input[type="range"] { width: 100%; height: 5px; margin: 13px 0 7px; accent-color
 .welcome-instruction { margin: 0; padding: 14px 16px; border-left: 2px solid var(--green); background: #f8f8f2; color: #748077; font-size: 12px; line-height: 1.65; }
 .welcome-instruction strong { color: var(--ink); }
 .welcome-start { display: block; min-width: 180px; margin: 20px auto 0; }
+.student-form { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 12px; margin-top: 15px; }
+.student-form label { color: #53665a; font-size: 11px; font-weight: 700; }
+.student-form label[for="student-name"] { grid-column: 1; grid-row: 1; }
+.student-form label[for="student-course"] { grid-column: 2; grid-row: 1; }
+.student-form input { width: 100%; min-width: 0; height: 40px; padding: 0 10px; border: 1px solid #dfe4db; border-radius: 7px; color: var(--ink); background: white; }
+.student-form .welcome-start { grid-column: 1 / -1; }
+.student-form input:focus, .assessment-choice:focus-within { outline: 2px solid var(--green); outline-offset: 2px; }
+.assessment-card, .ticket-card { max-width: 720px; margin: 0 auto; padding: 25px; }
+.assessment-card h3 { margin-bottom: 20px; font-size: 19px; line-height: 1.5; }
+#assessment-options { display: grid; gap: 9px; margin: 0 0 20px; padding: 0; border: 0; }
+.assessment-choice { display: flex; align-items: center; gap: 10px; min-height: 45px; padding: 10px 12px; border: 1px solid #e2e8de; border-radius: 8px; color: #526259; cursor: pointer; }
+.assessment-choice:has(input:checked) { border-color: var(--green); background: #edf4ec; }
+.assessment-choice input { accent-color: var(--green); }
+.assessment-card > .feedback { margin-bottom: 12px; }
+.ticket-card { text-align: center; }
+.ticket-card h3 { font-size: 24px; }
+.ticket-student { display: grid; gap: 7px; margin: 22px 0; padding: 14px; border-radius: 9px; background: #f5f7f1; }
+.ticket-student p { display: flex; justify-content: space-between; gap: 15px; margin: 0; font-size: 12px; text-align: left; }
+.ticket-student p span { color: #7d877f; }
+.ticket-student strong { overflow-wrap: anywhere; text-align: right; }
+.ticket-grade { display: grid; justify-items: center; gap: 3px; color: var(--green-dark); }
+.ticket-grade > span { font: 10px var(--mono); letter-spacing: .07em; }
+.ticket-grade strong { font: 500 54px var(--mono); }
+.ticket-grade small { color: #87918a; }
+.ticket-detail { margin: 14px 0 4px; color: #65756a; }
+.ticket-reference { color: #899187; font-size: 11px; }
+.ticket-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.ticket-card .feedback { margin-top: 14px; }
+.ticket-actions button:disabled { opacity: .6; cursor: not-allowed; }
 .school-logo { width: 32px; height: 34px; object-fit: contain; }
 .brand-divider { width: 1px; height: 23px; margin: 0 3px; background: #dfe1d7; }
 .brand { gap: 8px; }
@@ -350,4 +379,13 @@ input[type="range"] { width: 100%; height: 5px; margin: 13px 0 7px; accent-color
   .brand { font-size: 10px; }
   .school-logo { width: 28px; height: 30px; }
   .brand-divider { height: 20px; }
+  .student-form { display: flex; flex-direction: column; }
+  .student-form .welcome-start { margin-top: 10px; }
+  .assessment-card, .ticket-card { padding: 18px; }
+}
+@media print {
+  body * { visibility: hidden !important; }
+  #ticket, #ticket * { visibility: visible !important; }
+  #ticket { position: absolute; inset: 0; width: 100%; max-width: none; border: 0; box-shadow: none; }
+  .ticket-actions, .ticket-actions *, #submission-status { display: none !important; }
 }

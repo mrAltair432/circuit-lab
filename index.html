@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#f5f4ee">
   <title>Circuit Lab | Grade 8</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="submission-config.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -18,8 +19,14 @@
       <div class="welcome-route">
         <span>EXPLORE</span><i>→</i><span>INVESTIGATE</span><i>→</i><span>SOLVE</span><i>→</i><span>EXPLAIN</span>
       </div>
-      <p class="welcome-instruction"><strong>How this lab works</strong><br>Follow the six stages in order. Each stage gives you one clear mission. The circuit lab stays with you: change its settings, predict what will happen, and use its meter to check your thinking.</p>
-      <button class="primary-button welcome-start" id="start-lab" type="button">Start the lab <span aria-hidden="true">→</span></button>
+      <p class="welcome-instruction"><strong>Review first, then take the graded quiz.</strong><br>The review activities are practice. The final quiz has 10 questions, one attempt per question, and a score from 0 to 5. Passing score: 3.6. Your result will be shared with your teacher when submitted. Refreshing or closing this page starts a new session.</p>
+      <form id="student-form" class="student-form">
+        <label for="student-name">Full name</label>
+        <input id="student-name" name="name" type="text" autocomplete="name" maxlength="100" required>
+        <label for="student-course">Class / course</label>
+        <input id="student-course" name="course" type="text" maxlength="40" placeholder="For example: 8A" required>
+        <button class="primary-button welcome-start" id="start-lab" type="submit">Start the lab <span aria-hidden="true">→</span></button>
+      </form>
     </div>
   </div>
 
@@ -52,6 +59,7 @@
       <button class="step-tab" data-view="diagnose"><span>04</span> Diagnose</button>
       <button class="step-tab" data-view="compare"><span>05</span> Compare</button>
       <button class="step-tab" data-view="conclude"><span>06</span> Conclude</button>
+      <button class="step-tab" data-view="assessment"><span>07</span> Assessment</button>
     </nav>
 
     <section class="view-panel active" id="view-explore" aria-labelledby="explore-title">
@@ -166,7 +174,7 @@
     </section>
 
     <section class="view-panel" id="view-solve" aria-labelledby="solve-title" hidden>
-      <div class="section-heading"><div><p class="eyebrow">STAGE 03 / APPLY OHM'S LAW</p><h2 id="solve-title">Solve with the lab beside you</h2></div><p class="section-hint">Set up the circuit on the right, work it out, then check the meter.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 03 / UNGRADED PRACTICE</p><h2 id="solve-title">Solve with the lab beside you</h2></div><p class="section-hint">Practice here before the final assessment.</p></div>
       <div class="mission-banner compact-mission">
         <span class="mission-number">03</span><div><p class="eyebrow">YOUR MISSION</p><h3>Complete the eight calculation questions from your worksheet.</h3><p class="mission-description">Read the question, set the given values in the shared circuit, choose the right Ohm's Law equation, and calculate before checking the ammeter.</p></div>
       </div>
@@ -205,7 +213,7 @@
     <section class="view-panel" id="view-diagnose" aria-labelledby="diagnose-title" hidden>
       <div class="section-heading"><div><p class="eyebrow">STAGE 04 / FIND THE FAULT</p><h2 id="diagnose-title">Can you restore the current?</h2></div><p class="section-hint">Keep the component values as they are. Check the path.</p></div>
       <div class="mission-banner">
-        <span class="mission-number">04</span><div><p class="eyebrow">YOUR MISSION · WORKSHEET QUESTION 10</p><h3>A wire is disconnected. Predict what the ammeter will show, then repair the circuit.</h3>
+        <span class="mission-number">04</span><div><p class="eyebrow">YOUR MISSION · UNGRADED PRACTICE</p><h3>A wire is disconnected. Predict what the ammeter will show, then repair the circuit.</h3>
           <ol class="mission-steps"><li>Before clicking, choose the expected ammeter reading below.</li><li>Disconnect the wire and check the meter.</li><li>Reconnect it. Explain why the current returned.</li></ol>
           <p class="success-check"><strong>Success check:</strong> You can explain why an open circuit has approximately zero current.</p>
         </div>
@@ -257,7 +265,33 @@
         <button class="primary-button conclusion-check" id="check-conclusion" type="button">Check my conclusion <span aria-hidden="true">→</span></button><p id="conclusion-feedback" class="feedback" aria-live="polite"></p>
         <div class="ohm-reminder"><span class="reminder-icon">i</span><p><strong>Remember Ohm's Law</strong><br>Current depends on voltage and resistance: <b>I = V ÷ R</b>.</p></div>
       </article>
-      <div class="stage-footer"><span>YOU COMPLETED THE CIRCUIT LAB</span><button class="secondary-button" data-next="explore" type="button">Return to Stage 1 <span aria-hidden="true">↗</span></button></div>
+      <div class="stage-footer"><span>REVIEW COMPLETE</span><button class="primary-button" data-next="assessment" type="button">Continue to the graded assessment <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section class="view-panel" id="view-assessment" aria-labelledby="assessment-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STAGE 07 / GRADED ASSESSMENT</p><h2 id="assessment-title">Show what you learned</h2></div><p class="section-hint">10 questions · 0.5 points each · one attempt per question</p></div>
+      <div class="mission-banner compact-mission"><span class="mission-number">07</span><div><p class="eyebrow">BEFORE YOU BEGIN</p><h3>Read carefully before submitting each answer.</h3><p class="mission-description">Each answer is final once submitted. Your grade is out of 5.0; 3.6 is the passing score. The earlier stages are ungraded review. Do not refresh or close the page: your session is not saved.</p></div></div>
+      <article class="card assessment-card" id="assessment-question-card">
+        <div class="challenge-topline"><span class="eyebrow" id="assessment-progress">QUESTION 1 / 10</span><span class="score-pill">0.5 POINTS EACH</span></div>
+        <div class="challenge-progress"><span id="assessment-progress-bar"></span></div>
+        <h3 id="assessment-question"></h3>
+        <form id="assessment-form">
+          <fieldset id="assessment-options"><legend class="sr-only">Choose one answer</legend></fieldset>
+          <button class="primary-button" id="assessment-submit" type="submit">Submit answer <span aria-hidden="true">→</span></button>
+        </form>
+        <p id="assessment-feedback" class="feedback" aria-live="polite"></p>
+        <button class="secondary-button" id="assessment-next" type="button" hidden>Next question →</button>
+      </article>
+      <article class="card ticket-card" id="ticket" hidden aria-labelledby="ticket-title">
+        <p class="eyebrow">CIRCUIT LAB · GRADE 8 SCIENCE</p>
+        <h3 id="ticket-title">Assessment ticket</h3>
+        <div class="ticket-student"><p><span>Student</span><strong id="ticket-name"></strong></p><p><span>Class / course</span><strong id="ticket-course"></strong></p><p><span>Completed</span><strong id="ticket-date"></strong></p></div>
+        <div class="ticket-grade"><span>FINAL GRADE</span><strong id="ticket-grade"></strong><small>out of 5.0</small><span id="ticket-result"></span></div>
+        <p class="ticket-detail" id="ticket-detail"></p>
+        <p class="ticket-reference">Passing score: 3.6 / 5.0</p>
+        <div class="ticket-actions"><button class="primary-button" id="send-result" type="button">Send result to teacher →</button><button class="secondary-button" id="print-ticket" type="button">Print or save ticket</button></div>
+        <p id="submission-status" class="feedback" role="status" aria-live="polite">Your result has not been sent. Keep this page open until sending is confirmed.</p>
+      </article>
     </section>
   </main>
 

@@ -8,6 +8,11 @@ const state = {
   meterRevealed: false,
   challengeMathCorrect: false,
   diagnosisPrediction: '',
+  student: null,
+  assessmentIndex: 0,
+  assessmentAnswers: [],
+  submissionId: null,
+  submissionComplete: false,
 };
 
 const byId = (id) => document.getElementById(id);
@@ -23,6 +28,19 @@ const challengeData = [
   { voltage: 12, resistance: 6, answer: 2, unit: 'A', question: 'Keep the battery at 12 V. Change the resistor from 3 Ω to 6 Ω. What happens to the current?', known: 'Known: V = 12 V · R = 6 Ω · Find: I', context: 'Calculate the current with the 6 Ω resistor and compare it with 4 A at 3 Ω.', hint: 'The new resistance is 6 Ω. Calculate 12 ÷ 6.' },
   { voltage: 6, resistance: 4, answer: 10, unit: 'V', targetCurrent: 2.5, question: 'A 4 Ω resistor should carry a current of 2.5 A. Which battery voltage would produce it?', known: 'Known: I = 2.5 A · R = 4 Ω · Find: V', context: 'Use V = I × R. Adjust the battery until the ammeter reads 2.5 A.', hint: 'Multiply the current by the resistance: 2.5 × 4.' },
   { voltage: 15, resistance: 3, answer: 5, unit: 'Ω', targetCurrent: 3, question: 'The battery is 15 V and the ammeter reads 3 A. What is the resistance?', known: 'Known: V = 15 V · I = 3 A · Find: R', context: 'Use R = V ÷ I. Adjust the resistor until the ammeter reads 3 A.', hint: 'Divide the voltage by the current: 15 ÷ 3.' },
+];
+
+const assessmentQuestions = [
+  { question: 'Set the battery to 6 V and the resistor to 3 Ω. What current should the ammeter show?', choices: ['0.5 A', '2 A', '3 A', '18 A'], correct: 1 },
+  { question: 'Set the battery to 9 V and the resistor to 3 Ω. Compared with Question 1, what happens to the current?', choices: ['It decreases to 1 A', 'It stays at 2 A', 'It increases to 3 A', 'It increases to 6 A'], correct: 2 },
+  { question: 'Set the battery to 12 V and the resistor to 4 Ω. What current should flow?', choices: ['0.33 A', '3 A', '4 A', '48 A'], correct: 1 },
+  { question: 'A circuit has a current of 2 A through a 5 Ω resistor. What battery voltage would produce this current?', choices: ['0.4 V', '2.5 V', '7 V', '10 V'], correct: 3 },
+  { question: 'Set the battery to 8 V. If the ammeter reads 2 A, what resistance should the resistor have?', choices: ['4 Ω', '6 Ω', '10 Ω', '16 Ω'], correct: 0 },
+  { question: 'Keep the battery at 12 V. First use a 3 Ω resistor, then change it to 6 Ω. What happens to the current?', choices: ['It doubles from 4 A to 8 A', 'It halves from 4 A to 2 A', 'It stays at 4 A', 'It becomes 0 A'], correct: 1 },
+  { question: 'A resistor is set to 4 Ω. Which battery voltage would produce a current of 2.5 A?', choices: ['1.6 V', '6.5 V', '10 V', '16 V'], correct: 2 },
+  { question: 'The simulation shows 3 A of current when the battery is 15 V. What is the resistance?', choices: ['5 Ω', '12 Ω', '18 Ω', '45 Ω'], correct: 0 },
+  { question: 'You keep resistance constant and increase the battery voltage. Which statement best describes what you should observe?', choices: ['Current increases', 'Current decreases', 'Current becomes zero', 'Resistance automatically becomes zero'], correct: 0 },
+  { question: 'The battery is connected to the resistor, but one wire is disconnected so the loop is open. What should the ammeter show?', choices: ['Maximum current', 'The same current as before', 'Approximately zero current', 'Twice the previous current'], correct: 2 },
 ];
 
 function updateCircuit() {
@@ -229,7 +247,18 @@ function navigate(view) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-byId('start-lab').addEventListener('click', () => {
+byId('student-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const name = byId('student-name').value.trim();
+  const course = byId('student-course').value.trim();
+  if (!name || !course) {
+    const invalid = !name ? byId('student-name') : byId('student-course');
+    invalid.setCustomValidity('Please enter this information.');
+    invalid.reportValidity();
+    invalid.setCustomValidity('');
+    return;
+  }
+  state.student = { name, course };
   byId('welcome-dialog').hidden = true;
   byId('explore-title').focus({ preventScroll: true });
 });
@@ -371,9 +400,140 @@ byId('check-conclusion').addEventListener('click', () => {
   }
 });
 
+function renderAssessment() {
+  const item = assessmentQuestions[state.assessmentIndex];
+  const recorded = state.assessmentAnswers[state.assessmentIndex];
+  byId('assessment-progress').textContent = `QUESTION ${state.assessmentIndex + 1} / ${assessmentQuestions.length}`;
+  byId('assessment-progress-bar').style.width = `${(state.assessmentIndex + 1) / assessmentQuestions.length * 100}%`;
+  byId('assessment-question').textContent = item.question;
+  const fieldset = byId('assessment-options');
+  fieldset.replaceChildren();
+  const legend = document.createElement('legend');
+  legend.className = 'sr-only';
+  legend.textContent = 'Choose one answer';
+  fieldset.append(legend);
+  item.choices.forEach((choice, index) => {
+    const label = document.createElement('label');
+    label.className = 'assessment-choice';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'assessment-answer';
+    input.value = String(index);
+    input.required = true;
+    input.disabled = recorded !== undefined;
+    input.checked = recorded === index;
+    const text = document.createElement('span');
+    text.textContent = `${String.fromCharCode(65 + index)}. ${choice}`;
+    label.append(input, text);
+    fieldset.append(label);
+  });
+  byId('assessment-submit').hidden = recorded !== undefined;
+  byId('assessment-next').hidden = recorded === undefined;
+  byId('assessment-feedback').textContent = recorded === undefined ? '' : 'Answer submitted. You cannot change it in this session.';
+  byId('assessment-feedback').className = 'feedback';
+  byId('assessment-next').textContent = state.assessmentIndex === assessmentQuestions.length - 1 ? 'View my ticket →' : 'Next question →';
+}
+
+byId('assessment-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  if (state.assessmentAnswers[state.assessmentIndex] !== undefined) return;
+  const selected = document.querySelector('input[name="assessment-answer"]:checked');
+  if (!selected) {
+    byId('assessment-feedback').textContent = 'Choose an answer before submitting.';
+    byId('assessment-feedback').className = 'feedback error';
+    return;
+  }
+  state.assessmentAnswers[state.assessmentIndex] = Number(selected.value);
+  renderAssessment();
+});
+
+byId('assessment-next').addEventListener('click', () => {
+  if (state.assessmentAnswers[state.assessmentIndex] === undefined) return;
+  if (state.assessmentIndex < assessmentQuestions.length - 1) {
+    state.assessmentIndex += 1;
+    renderAssessment();
+    return;
+  }
+  const score = state.assessmentAnswers.reduce((total, answer, index) => total + (answer === assessmentQuestions[index].correct ? 1 : 0), 0);
+  const grade = score / 2;
+  state.submissionId = crypto.randomUUID();
+  byId('assessment-question-card').hidden = true;
+  byId('ticket').hidden = false;
+  byId('ticket-name').textContent = state.student.name;
+  byId('ticket-course').textContent = state.student.course;
+  byId('ticket-date').textContent = new Date().toLocaleString('en-GB');
+  byId('ticket-grade').textContent = grade.toFixed(1);
+  byId('ticket-result').textContent = grade >= 3.6 ? 'PASSED' : 'NOT YET PASSED';
+  byId('ticket-detail').textContent = `${score} of ${assessmentQuestions.length} answers correct · ${format(score * 0.5, 1)} points`;
+  byId('ticket-title').focus({ preventScroll: true });
+});
+
+byId('print-ticket').addEventListener('click', () => window.print());
+
+let submissionPending = false;
+byId('send-result').addEventListener('click', () => {
+  const status = byId('submission-status');
+  if (submissionPending || state.submissionComplete) return;
+  const endpoint = window.CIRCUIT_LAB_SUBMISSION_URL;
+  if (typeof endpoint !== 'string' || !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(endpoint)) {
+    status.textContent = 'Sending is not configured. Your result has not been sent. Please show or print this ticket for your teacher.';
+    status.className = 'feedback error';
+    return;
+  }
+  const nonce = crypto.randomUUID();
+  const iframe = document.createElement('iframe');
+  iframe.name = `circuit-submission-${nonce}`;
+  iframe.hidden = true;
+  iframe.title = 'Assessment submission';
+  const form = document.createElement('form');
+  form.hidden = true;
+  form.method = 'POST';
+  form.action = endpoint;
+  form.target = iframe.name;
+  const data = document.createElement('input');
+  data.type = 'hidden';
+  data.name = 'payload';
+  data.value = JSON.stringify({ id: state.submissionId, nonce, name: state.student.name, course: state.student.course, answers: state.assessmentAnswers });
+  form.append(data);
+  document.body.append(iframe, form);
+  submissionPending = true;
+  byId('send-result').disabled = true;
+  status.textContent = 'Sending your result. Please keep this page open…';
+  status.className = 'feedback';
+  let timeout;
+  const finish = (message, success) => {
+    clearTimeout(timeout);
+    window.removeEventListener('message', receive);
+    iframe.remove();
+    form.remove();
+    submissionPending = false;
+    state.submissionComplete = success;
+    byId('send-result').disabled = success;
+    status.textContent = message;
+    status.className = `feedback ${success ? 'success' : 'error'}`;
+  };
+  const receive = (event) => {
+    const trustedOrigin = /^https:\/\/(?:script\.google\.com|[a-z0-9-]+\.googleusercontent\.com)$/.test(event.origin);
+    if (!trustedOrigin || !event.data || event.data.type !== 'circuit-lab-submission' || event.data.nonce !== nonce) return;
+    if (event.data.ok === true) finish('Result saved and email notification sent to your teacher.', true);
+    else finish('The result could not be fully delivered. Please try again or show the ticket to your teacher.', false);
+  };
+  window.addEventListener('message', receive);
+  timeout = setTimeout(() => finish('No confirmation received. Your result may not have been delivered; please retry or show your ticket to your teacher.', false), 30000);
+  form.submit();
+});
+
+window.addEventListener('beforeunload', (event) => {
+  if (state.assessmentAnswers.length > 0 && !state.submissionComplete) {
+    event.preventDefault();
+    event.returnValue = '';
+  }
+});
+
 byId('disconnect-wire').disabled = true;
 setStudy('voltage');
 renderChallenge();
+renderAssessment();
 updateCircuit();
 updateCompare();
-byId('start-lab').focus();
+byId('student-name').focus();
